@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>属性剣クラフト</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section id="title-screen" class="screen screen-title is-active" aria-labelledby="title-heading">
+      <div class="title-panel">
+        <p class="eyebrow">文化祭デモ版</p>
+        <h1 id="title-heading">属性剣クラフト</h1>
+        <img class="title-sword-image" src="assets/old-sword.png" alt="古びた剣">
+        <p class="lead">古びた剣に魔石をはめ込み、属性の力を宿した武器を鍛えよう。</p>
+        <button id="start-button" class="primary-button" type="button">クラフトを始める</button>
+      </div>
+    </section>
+
+    <section id="craft-screen" class="screen" aria-labelledby="craft-heading">
+      <header class="craft-header">
+        <div>
+          <p class="eyebrow">鍛冶場</p>
+          <h2 id="craft-heading">素材を選んでスロットに配置</h2>
+        </div>
+        <div class="base-status" aria-label="初期ステータス">
+          <span>攻撃力 100</span>
+          <span>耐久力 80</span>
+          <span>属性 なし</span>
+        </div>
+      </header>
+
+      <div class="craft-layout">
+        <aside class="materials-panel" aria-label="素材一覧">
+          <h3>素材</h3>
+          <div id="materials-list" class="materials-list"></div>
+        </aside>
+
+        <section class="forge-panel" aria-label="クラフト台">
+          <div id="message" class="message" role="status" aria-live="polite">素材をタップして選択してください。</div>
+
+          <div class="forge-circle" aria-label="古びた剣とスロット">
+            <div id="fusion-stage" class="fusion-stage" aria-hidden="true">
+              <div id="magic-circle" class="magic-circle"></div>
+              <img id="fusion-result-image" class="fusion-result-image" src="assets/old-sword.png" alt="">
+            </div>
+
+            <button class="slot slot-top" type="button" data-slot="top" aria-label="上スロット">
+              <span class="slot-name">上</span>
+              <span class="slot-value">空</span>
+              <span class="slot-effect">攻撃力 +50</span>
+            </button>
+            <button class="slot slot-right" type="button" data-slot="right" aria-label="右スロット">
+              <span class="slot-name">右</span>
+              <span class="slot-value">空</span>
+              <span class="slot-effect">耐久力 +20</span>
+            </button>
+            <button class="slot slot-left" type="button" data-slot="left" aria-label="左スロット">
+              <span class="slot-name">左</span>
+              <span class="slot-value">空</span>
+              <span class="slot-effect">耐久力 +20</span>
+            </button>
+            <button class="slot slot-bottom" type="button" data-slot="bottom" aria-label="下スロット">
+              <span class="slot-name">下</span>
+              <span class="slot-value">空</span>
+              <span class="slot-effect">攻撃 -20 / 耐久 -15</span>
+            </button>
+
+            <div class="sword" aria-label="古びた剣">
+              <img id="craft-sword-image" src="assets/old-sword.png" alt="古びた剣">
+              <p>古びた剣</p>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="synthesize-button" class="primary-button" type="button">合成する</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="result-screen" class="screen" aria-labelledby="result-heading">
+      <div class="result-panel">
+        <p class="eyebrow">鍛造完了</p>
+        <h2 id="result-heading">合成成功！</h2>
+        <img id="result-weapon-image" class="result-weapon-image" src="assets/old-sword.png" alt="完成した属性剣">
+
+        <dl class="result-stats">
+          <div>
+            <dt>完成武器名</dt>
+            <dd id="result-name"></dd>
+          </div>
+          <div>
+            <dt>攻撃力</dt>
+            <dd id="result-attack"></dd>
+          </div>
+          <div>
+            <dt>耐久力</dt>
+            <dd id="result-durability"></dd>
+          </div>
+          <div>
+            <dt>属性</dt>
+            <dd id="result-element"></dd>
+          </div>
+        </dl>
+
+        <section class="effect-box" aria-labelledby="effect-heading">
+          <h3 id="effect-heading">配置による効果説明</h3>
+          <ul id="effect-list"></ul>
+        </section>
+
+        <button id="reset-button" class="primary-button" type="button">最初に戻る</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
