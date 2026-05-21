@@ -286,12 +286,16 @@ h4 {
 
 .craft-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 340px) minmax(520px, 1fr) minmax(250px, 310px);
+  grid-template-columns: minmax(260px, 330px) minmax(680px, 1fr) minmax(250px, 310px);
   grid-template-areas:
     "inventory workbench status"
     "inventory actions status";
   gap: clamp(12px, 2vw, 20px);
   align-items: stretch;
+}
+
+.craft-layout.inventory-collapsed {
+  grid-template-columns: 84px minmax(820px, 1fr) minmax(250px, 310px);
 }
 
 .inventory-panel {
@@ -301,6 +305,7 @@ h4 {
   min-height: 0;
   max-height: calc(100dvh - 190px);
   padding: 16px;
+  transition: width 0.2s ease, padding 0.2s ease;
 }
 
 .panel-title-row {
@@ -321,7 +326,34 @@ h4 {
 }
 
 .inventory-panel.is-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   max-height: none;
+  min-height: 520px;
+  padding: 10px;
+}
+
+.inventory-panel.is-collapsed .panel-title-row {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.inventory-panel.is-collapsed h3 {
+  margin: 0;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 1.2rem;
+  letter-spacing: 0;
+}
+
+.inventory-panel.is-collapsed .tiny-button {
+  min-width: 58px;
+  width: 58px;
+  min-height: 136px;
+  padding: 10px 6px;
+  writing-mode: vertical-rl;
 }
 
 .inventory-panel.is-collapsed .panel-note,
@@ -440,7 +472,7 @@ h4 {
 
 .workbench {
   position: relative;
-  min-height: clamp(610px, 64vw, 760px);
+  min-height: clamp(760px, 68vw, 900px);
   border: 2px solid rgba(216, 164, 74, 0.38);
   border-radius: 8px;
   overflow: hidden;
@@ -478,7 +510,7 @@ h4 {
 .base-sword {
   position: absolute;
   z-index: 1;
-  top: 51%;
+  top: 53%;
   left: 50%;
   display: grid;
   justify-items: center;
@@ -486,12 +518,13 @@ h4 {
 }
 
 .base-sword img {
-  width: min(260px, 34vw);
-  max-height: 410px;
+  width: min(300px, 32vw);
+  max-height: 460px;
   aspect-ratio: 1;
   object-fit: contain;
   border-radius: 8px;
   filter: drop-shadow(0 0 26px rgba(255, 226, 162, 0.22));
+  transform: rotate(180deg);
 }
 
 .base-sword span {
@@ -509,14 +542,14 @@ h4 {
   display: grid;
   place-items: center;
   gap: 4px;
-  width: clamp(150px, 16vw, 190px);
-  min-height: clamp(132px, 14vw, 164px);
+  width: clamp(160px, 15vw, 205px);
+  min-height: clamp(138px, 13vw, 170px);
   padding: 12px;
-  border: 2px dashed rgba(255, 226, 162, 0.68);
+  border: 3px dashed rgba(255, 226, 162, 0.78);
   border-radius: 18px;
   text-align: center;
-  background: rgba(10, 9, 8, 0.78);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32), inset 0 0 20px rgba(216, 164, 74, 0.08);
+  background: rgba(10, 9, 8, 0.9);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.48), inset 0 0 24px rgba(216, 164, 74, 0.13);
   transition: border-color 0.16s, box-shadow 0.16s, transform 0.16s, background 0.16s;
 }
 
@@ -536,7 +569,6 @@ h4 {
 }
 
 .craft-slot.is-drop-target {
-  transform: scale(1.06);
   box-shadow: 0 0 0 7px rgba(255, 226, 162, 0.24), 0 0 44px rgba(255, 226, 162, 0.48);
 }
 
@@ -612,36 +644,44 @@ h4 {
   left: 50%;
   transform: translateX(-50%);
   border-radius: 50%;
+  border-color: rgba(255, 118, 82, 0.9);
+  box-shadow: 0 0 0 3px rgba(255, 118, 82, 0.12), 0 14px 30px rgba(0, 0, 0, 0.48);
 }
 
 .slot-skill {
-  top: 28%;
-  right: 8%;
+  top: 210px;
+  right: 5%;
   border-radius: 22px;
+  border-color: rgba(213, 140, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(213, 140, 255, 0.12), 0 14px 30px rgba(0, 0, 0, 0.48);
 }
 
 .slot-top {
-  top: 22%;
+  top: 210px;
   left: 50%;
   transform: translateX(-50%);
+  border-color: rgba(255, 116, 94, 0.88);
 }
 
 .slot-right {
-  top: 52%;
-  right: 3%;
+  top: 56%;
+  right: 3.5%;
   transform: translateY(-50%);
+  border-color: rgba(111, 182, 255, 0.88);
 }
 
 .slot-left {
-  top: 52%;
-  left: 3%;
+  top: 56%;
+  left: 3.5%;
   transform: translateY(-50%);
+  border-color: rgba(128, 215, 137, 0.88);
 }
 
 .slot-bottom {
-  bottom: 18px;
+  bottom: 26px;
   left: 50%;
   transform: translateX(-50%);
+  border-color: rgba(213, 140, 255, 0.88);
 }
 
 .status-panel {

@@ -179,6 +179,7 @@ const screens = {
 };
 
 const startButton = document.getElementById("start-button");
+const craftLayout = document.getElementById("craft-layout");
 const inventoryPanel = document.getElementById("inventory-panel");
 const inventoryToggle = document.getElementById("inventory-toggle");
 const inventoryList = document.getElementById("inventory-list");
@@ -569,6 +570,7 @@ function resetCraft() {
   };
   isSynthesizing = false;
   synthesizeButton.disabled = false;
+  resetButton.disabled = false;
   resetFusionEffects();
   renderAll();
   setMessage(craftMessage, "素材カタログからアイテムをドラッグしてください。");
@@ -814,7 +816,8 @@ async function requestFullscreen() {
 function toggleInventory() {
   const willCollapse = !inventoryPanel.classList.contains("is-collapsed");
   inventoryPanel.classList.toggle("is-collapsed", willCollapse);
-  inventoryToggle.textContent = willCollapse ? "▼ 開く" : "▲ 閉じる";
+  craftLayout.classList.toggle("inventory-collapsed", willCollapse);
+  inventoryToggle.textContent = willCollapse ? "▶ 開く" : "◀ 閉じる";
   inventoryToggle.setAttribute("aria-expanded", String(!willCollapse));
 }
 
