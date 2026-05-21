@@ -170,7 +170,10 @@ let slots = {
 };
 
 let activeDrag = null;
+let pendingDrag = null;
 let isSynthesizing = false;
+const DRAG_LONG_PRESS_MS = 170;
+const DRAG_SCROLL_CANCEL_DISTANCE = 12;
 
 const screens = {
   title: document.getElementById("title-screen"),
@@ -540,6 +543,140 @@ function endDrag(event) {
     setMessage(craftMessage, `${item.name}はそのスロットには置けません。`, "error");
   } else {
     setMessage(craftMessage, `${item.name}を作業台のスロットへ運んでください。`, "error");
+  }
+
+  sourceCard.classList.remove("is-drag-source");
+  ghost.remove();
+  activeDrag = null;
+  clearDropHighlights();
+}
+
+function cancelPendingDrag() {
+  if (!pendingDrag) {
+    return;
+  }
+
+  window.clearTimeout(pendingDrag.timerId);
+  pendingDrag = null;
+}
+
+function startActiveDrag(card, item, x, y, pointerId) {
+  cancelPendingDrag();
+  card.classList.add("is-drag-source");
+  activeDrag = {
+    item,
+    sourceCard: card,
+    ghost: createDragGhost(item),
+    pointerId
+  };
+
+  if (pointerId !== undefined && card.setPointerCapture) {
+    try {
+      card.setPointerCapture(pointerId);
+    } catch (error) {
+      // Pointer capture can fail if the browser already handled the touch.
+    }
+  }
+
+  highlightDropZones(item);
+  moveGhost(x, y);
+  updateHoveredSlot(x, y);
+  setMessage(craftMessage, `${item.name}を作業台のスロットへ運んでください。`);
+}
+
+function beginDrag(event, card) {
+  if (isSynthesizing || event.button === 2 || activeDrag) {
+    return;
+  }
+
+  const item = getItem(card.dataset.itemId);
+
+  if (!item) {
+    return;
+  }
+
+  if (event.pointerType === "mouse") {
+    event.preventDefault();
+    startActiveDrag(card, item, event.clientX, event.clientY, event.pointerId);
+    return;
+  }
+
+  cancelPendingDrag();
+  pendingDrag = {
+    item,
+    sourceCard: card,
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    timerId: window.setTimeout(() => {
+      if (!pendingDrag || pendingDrag.pointerId !== event.pointerId) {
+        return;
+      }
+
+      startActiveDrag(card, item, pendingDrag.startX, pendingDrag.startY, event.pointerId);
+    }, DRAG_LONG_PRESS_MS)
+  };
+}
+
+function moveDrag(event) {
+  if (pendingDrag && pendingDrag.pointerId === event.pointerId) {
+    const dx = event.clientX - pendingDrag.startX;
+    const dy = event.clientY - pendingDrag.startY;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+
+    if (absY > DRAG_SCROLL_CANCEL_DISTANCE && absY > absX * 1.15) {
+      cancelPendingDrag();
+      return;
+    }
+
+    if (absX > DRAG_SCROLL_CANCEL_DISTANCE && absX > absY * 1.05) {
+      event.preventDefault();
+      const { sourceCard, item, pointerId } = pendingDrag;
+      startActiveDrag(sourceCard, item, event.clientX, event.clientY, pointerId);
+    }
+  }
+
+  if (!activeDrag || activeDrag.pointerId !== event.pointerId) {
+    return;
+  }
+
+  event.preventDefault();
+  moveGhost(event.clientX, event.clientY);
+  updateHoveredSlot(event.clientX, event.clientY);
+}
+
+function endDrag(event) {
+  if (pendingDrag && pendingDrag.pointerId === event.pointerId) {
+    cancelPendingDrag();
+    return;
+  }
+
+  if (!activeDrag || activeDrag.pointerId !== event.pointerId) {
+    return;
+  }
+
+  event.preventDefault();
+  const slotElement = updateHoveredSlot(event.clientX, event.clientY);
+  const { item, sourceCard, ghost } = activeDrag;
+
+  if (canDrop(item, slotElement)) {
+    const slotName = slotElement.dataset.slot;
+    slots[slotName] = item.id;
+    renderAll();
+    setMessage(craftMessage, `${slotLabels[slotName]}に${item.name}をセットしました。`, "success");
+  } else if (slotElement) {
+    setMessage(craftMessage, `${item.name}はそのスロットには置けません。`, "error");
+  } else {
+    setMessage(craftMessage, `${item.name}を作業台のスロットへ運んでください。`, "error");
+  }
+
+  if (activeDrag.pointerId !== undefined && sourceCard.releasePointerCapture) {
+    try {
+      sourceCard.releasePointerCapture(activeDrag.pointerId);
+    } catch (error) {
+      // The browser may already have released it after touch cancellation.
+    }
   }
 
   sourceCard.classList.remove("is-drag-source");
