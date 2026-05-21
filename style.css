@@ -240,8 +240,12 @@ h4 {
 }
 
 .craft-screen {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-height: calc(100vh - clamp(24px, 4.4vw, 52px));
+  min-height: calc(100dvh - clamp(24px, 4.4vw, 52px));
   align-content: start;
-  gap: 14px;
+  gap: 10px;
+  overflow: hidden;
 }
 
 .craft-topbar {
@@ -249,14 +253,14 @@ h4 {
   justify-content: space-between;
   gap: 18px;
   align-items: center;
-  padding: clamp(14px, 2vw, 20px);
+  padding: clamp(10px, 1.4vw, 16px);
   border: 1px solid rgba(216, 164, 74, 0.28);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.22);
 }
 
 .craft-guide {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: var(--muted);
   font-size: clamp(1.08rem, 1.9vw, 1.28rem);
   font-weight: 800;
@@ -272,7 +276,7 @@ h4 {
 }
 
 .quick-steps li {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid rgba(216, 164, 74, 0.4);
   border-radius: 8px;
   color: #ffe8bf;
@@ -286,16 +290,19 @@ h4 {
 
 .craft-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 330px) minmax(680px, 1fr) minmax(250px, 310px);
+  grid-template-columns: minmax(420px, 40vw) minmax(0, 1fr) minmax(230px, 280px);
   grid-template-areas:
     "inventory workbench status"
     "inventory actions status";
   gap: clamp(12px, 2vw, 20px);
   align-items: stretch;
+  min-height: 0;
+  height: calc(100dvh - 270px);
+  min-height: 500px;
 }
 
 .craft-layout.inventory-collapsed {
-  grid-template-columns: 84px minmax(820px, 1fr) minmax(250px, 310px);
+  grid-template-columns: 84px minmax(0, 1fr) minmax(230px, 280px);
 }
 
 .inventory-panel {
@@ -303,7 +310,7 @@ h4 {
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
   min-height: 0;
-  max-height: calc(100dvh - 190px);
+  max-height: none;
   padding: 16px;
   transition: width 0.2s ease, padding 0.2s ease;
 }
@@ -330,7 +337,7 @@ h4 {
   align-items: center;
   justify-content: center;
   max-height: none;
-  min-height: 520px;
+  min-height: 0;
   padding: 10px;
 }
 
@@ -467,12 +474,14 @@ h4 {
 .workbench-panel {
   grid-area: workbench;
   min-width: 0;
-  padding: clamp(10px, 1.5vw, 16px);
+  min-height: 0;
+  padding: clamp(8px, 1.1vw, 12px);
 }
 
 .workbench {
   position: relative;
-  min-height: clamp(760px, 68vw, 900px);
+  height: 100%;
+  min-height: 0;
   border: 2px solid rgba(216, 164, 74, 0.38);
   border-radius: 8px;
   overflow: hidden;
@@ -510,7 +519,7 @@ h4 {
 .base-sword {
   position: absolute;
   z-index: 1;
-  top: 53%;
+  top: 50%;
   left: 50%;
   display: grid;
   justify-items: center;
@@ -518,8 +527,8 @@ h4 {
 }
 
 .base-sword img {
-  width: min(300px, 32vw);
-  max-height: 460px;
+  width: min(240px, 25vw);
+  max-height: min(390px, 52dvh);
   aspect-ratio: 1;
   object-fit: contain;
   border-radius: 8px;
@@ -542,9 +551,9 @@ h4 {
   display: grid;
   place-items: center;
   gap: 4px;
-  width: clamp(160px, 15vw, 205px);
-  min-height: clamp(138px, 13vw, 170px);
-  padding: 12px;
+  width: clamp(140px, 13vw, 182px);
+  min-height: clamp(112px, 11vw, 146px);
+  padding: 10px;
   border: 3px dashed rgba(255, 226, 162, 0.78);
   border-radius: 18px;
   text-align: center;
@@ -574,14 +583,14 @@ h4 {
 
 .slot-title {
   color: var(--gold-bright);
-  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  font-size: clamp(0.96rem, 1.35vw, 1.08rem);
   font-weight: 900;
   line-height: 1.2;
 }
 
 .slot-help {
   color: var(--muted);
-  font-size: clamp(0.86rem, 1.2vw, 0.98rem);
+  font-size: clamp(0.78rem, 1.05vw, 0.92rem);
   font-weight: 800;
   line-height: 1.25;
 }
@@ -591,7 +600,7 @@ h4 {
   justify-items: center;
   gap: 4px;
   width: 100%;
-  min-height: 44px;
+  min-height: 36px;
   color: #fff3d2;
   font-weight: 900;
   line-height: 1.2;
@@ -640,53 +649,62 @@ h4 {
 }
 
 .slot-attribute {
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 50%;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  border-radius: 24px;
   border-color: rgba(255, 118, 82, 0.9);
-  box-shadow: 0 0 0 3px rgba(255, 118, 82, 0.12), 0 14px 30px rgba(0, 0, 0, 0.48);
+  background: rgba(32, 10, 7, 0.92);
+  box-shadow: 0 0 0 4px rgba(255, 118, 82, 0.16), 0 14px 30px rgba(0, 0, 0, 0.48);
 }
 
 .slot-skill {
-  top: 210px;
-  right: 5%;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
   border-radius: 22px;
   border-color: rgba(213, 140, 255, 0.9);
-  box-shadow: 0 0 0 3px rgba(213, 140, 255, 0.12), 0 14px 30px rgba(0, 0, 0, 0.48);
+  background: rgba(24, 10, 34, 0.92);
+  box-shadow: 0 0 0 4px rgba(213, 140, 255, 0.16), 0 14px 30px rgba(0, 0, 0, 0.48);
 }
 
 .slot-top {
-  top: 210px;
+  top: 8%;
   left: 50%;
   transform: translateX(-50%);
   border-color: rgba(255, 116, 94, 0.88);
+  background: rgba(32, 13, 9, 0.9);
 }
 
 .slot-right {
   top: 56%;
-  right: 3.5%;
+  right: 24%;
   transform: translateY(-50%);
   border-color: rgba(111, 182, 255, 0.88);
+  background: rgba(7, 19, 32, 0.9);
 }
 
 .slot-left {
   top: 56%;
-  left: 3.5%;
+  left: 24%;
   transform: translateY(-50%);
   border-color: rgba(128, 215, 137, 0.88);
+  background: rgba(8, 27, 13, 0.9);
 }
 
 .slot-bottom {
-  bottom: 26px;
+  bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
   border-color: rgba(213, 140, 255, 0.88);
+  background: rgba(24, 10, 34, 0.9);
 }
 
 .status-panel {
   grid-area: status;
-  padding: 18px;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
 }
 
 .boost-list {
