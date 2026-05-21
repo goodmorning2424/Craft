@@ -249,7 +249,7 @@ h4 {
 }
 
 .craft-topbar {
-  display: flex;
+  display: none;
   justify-content: space-between;
   gap: 18px;
   align-items: center;
@@ -299,7 +299,7 @@ h4 {
 
 .craft-layout {
   display: grid;
-  grid-template-columns: minmax(420px, 40vw) minmax(0, 1fr) minmax(230px, 280px);
+  grid-template-columns: minmax(230px, 20vw) minmax(0, 1fr) minmax(230px, 280px);
   grid-template-rows: minmax(0, 1fr) auto;
   grid-template-areas:
     "inventory workbench status"
@@ -307,8 +307,8 @@ h4 {
   gap: clamp(10px, 1.5vw, 16px);
   align-items: stretch;
   min-height: 0;
-  height: calc(100dvh - 205px);
-  min-height: 560px;
+  height: calc(100dvh - 86px);
+  min-height: 0;
 }
 
 .craft-layout.inventory-collapsed {
@@ -321,7 +321,7 @@ h4 {
   grid-template-rows: auto auto minmax(0, 1fr);
   min-height: 0;
   max-height: none;
-  padding: 16px;
+  padding: 12px;
   transition: width 0.2s ease, padding 0.2s ease;
 }
 
@@ -491,7 +491,7 @@ h4 {
 .workbench {
   position: relative;
   height: 100%;
-  min-height: 560px;
+  min-height: 0;
   border: 2px solid rgba(216, 164, 74, 0.38);
   border-radius: 8px;
   overflow: hidden;
@@ -561,9 +561,9 @@ h4 {
   display: grid;
   place-items: center;
   gap: 4px;
-  width: clamp(140px, 13vw, 182px);
-  min-height: clamp(112px, 11vw, 146px);
-  padding: 10px;
+  width: clamp(132px, 12vw, 172px);
+  min-height: clamp(104px, 10vw, 136px);
+  padding: 8px;
   border: 3px dashed rgba(255, 226, 162, 0.78);
   border-radius: 18px;
   text-align: center;
@@ -593,14 +593,14 @@ h4 {
 
 .slot-title {
   color: var(--gold-bright);
-  font-size: clamp(0.96rem, 1.35vw, 1.08rem);
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
   font-weight: 900;
   line-height: 1.2;
 }
 
 .slot-help {
   color: var(--muted);
-  font-size: clamp(0.78rem, 1.05vw, 0.92rem);
+  font-size: clamp(0.72rem, 0.95vw, 0.84rem);
   font-weight: 800;
   line-height: 1.25;
 }
@@ -634,7 +634,7 @@ h4 {
 }
 
 .slot-content .slot-item-name {
-  font-size: 0.98rem;
+  font-size: 0.86rem;
 }
 
 .remove-slot-button {
@@ -660,7 +660,7 @@ h4 {
 
 .slot-attribute {
   top: 50%;
-  left: 20px;
+  left: 14px;
   transform: translateY(-50%);
   border-radius: 24px;
   border-color: rgba(255, 118, 82, 0.9);
@@ -670,7 +670,7 @@ h4 {
 
 .slot-skill {
   top: 50%;
-  right: 20px;
+  right: 14px;
   transform: translateY(-50%);
   border-radius: 22px;
   border-color: rgba(213, 140, 255, 0.9);
@@ -679,7 +679,7 @@ h4 {
 }
 
 .slot-top {
-  top: 8%;
+  top: 7%;
   left: 50%;
   transform: translateX(-50%);
   border-color: rgba(255, 116, 94, 0.88);
@@ -688,7 +688,7 @@ h4 {
 
 .slot-right {
   top: 56%;
-  right: 24%;
+  right: 22%;
   transform: translateY(-50%);
   border-color: rgba(111, 182, 255, 0.88);
   background: rgba(7, 19, 32, 0.9);
@@ -696,14 +696,14 @@ h4 {
 
 .slot-left {
   top: 56%;
-  left: 24%;
+  left: 22%;
   transform: translateY(-50%);
   border-color: rgba(128, 215, 137, 0.88);
   background: rgba(8, 27, 13, 0.9);
 }
 
 .slot-bottom {
-  bottom: 8%;
+  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
   border-color: rgba(213, 140, 255, 0.88);
@@ -785,7 +785,7 @@ h4 {
 
 @media (min-width: 1300px) {
   .craft-layout {
-    height: calc(100dvh - 190px);
+    height: calc(100dvh - 82px);
   }
 }
 
