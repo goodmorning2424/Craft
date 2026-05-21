@@ -171,6 +171,8 @@ let slots = {
 
 let activeDrag = null;
 let pendingDrag = null;
+let selectedItemId = null;
+let inventoryTouchStartY = 0;
 let isSynthesizing = false;
 const DRAG_LONG_PRESS_MS = 170;
 const DRAG_SCROLL_CANCEL_DISTANCE = 12;
@@ -386,6 +388,7 @@ function renderSlots() {
 function renderAll() {
   renderSlots();
   renderBoosts();
+  updateSelectionUi();
 }
 
 function detailHtml(item) {
@@ -435,6 +438,74 @@ function closeModal() {
 
 function canDrop(item, slotElement) {
   return Boolean(item && slotElement && item.category === slotElement.dataset.accept);
+}
+
+function updateSelectionUi() {
+  const selectedItem = getItem(selectedItemId);
+
+  document.querySelectorAll(".item-card").forEach((card) => {
+    card.classList.toggle("is-selected", card.dataset.itemId === selectedItemId);
+  });
+
+  slotElements.forEach((slotElement) => {
+    const isCompatible = canDrop(selectedItem, slotElement);
+    slotElement.classList.toggle("is-valid-drop", isCompatible);
+    slotElement.classList.remove("is-invalid-drop", "is-drop-target");
+  });
+}
+
+function selectItem(itemId) {
+  const item = getItem(itemId);
+
+  if (!item || isSynthesizing) {
+    return;
+  }
+
+  selectedItemId = item.id;
+  updateSelectionUi();
+  setMessage(craftMessage, `${item.name}を選びました。光っているスロットをタップしてください。`);
+}
+
+function placeSelectedItem(slotElement) {
+  const item = getItem(selectedItemId);
+
+  if (!item || !slotElement || isSynthesizing) {
+    setMessage(craftMessage, "先に持ち物BOXからアイテムを選んでください。", "error");
+    return;
+  }
+
+  if (!canDrop(item, slotElement)) {
+    setMessage(craftMessage, `${item.name}はそのスロットには置けません。`, "error");
+    return;
+  }
+
+  const slotName = slotElement.dataset.slot;
+  slots[slotName] = item.id;
+  renderAll();
+  setMessage(craftMessage, `${slotLabels[slotName]}に${item.name}をセットしました。`, "success");
+}
+
+function handleInventoryTouchStart(event) {
+  if (event.touches.length !== 1) {
+    return;
+  }
+
+  inventoryTouchStartY = event.touches[0].clientY;
+}
+
+function handleInventoryTouchMove(event) {
+  if (event.touches.length !== 1) {
+    return;
+  }
+
+  const currentY = event.touches[0].clientY;
+  const deltaY = currentY - inventoryTouchStartY;
+  const atTop = inventoryList.scrollTop <= 0;
+  const atBottom = inventoryList.scrollTop + inventoryList.clientHeight >= inventoryList.scrollHeight - 1;
+
+  if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
+    event.preventDefault();
+  }
 }
 
 function clearDropHighlights() {
@@ -705,6 +776,13 @@ function resetCraft() {
     left: null,
     bottom: null
   };
+  selectedItemId = null;
+  cancelPendingDrag();
+  if (activeDrag) {
+    activeDrag.sourceCard.classList.remove("is-drag-source");
+    activeDrag.ghost.remove();
+    activeDrag = null;
+  }
   isSynthesizing = false;
   synthesizeButton.disabled = false;
   resetButton.disabled = false;
@@ -964,60 +1042,68 @@ function bindEvents() {
     setMessage(craftMessage, "アイテムを指で持って、作業台のスロットに置こう！");
   });
 
+  startButton.addEventListener("click", () => {
+    setMessage(craftMessage, "持ち物BOXからアイテムをタップして、スロットに置こう！");
+  });
+
   inventoryToggle.addEventListener("click", toggleInventory);
 
   fullscreenButtons.forEach((button) => {
     button.addEventListener("click", requestFullscreen);
   });
 
-  inventoryList.addEventListener("pointerdown", (event) => {
+  inventoryList.addEventListener("click", (event) => {
     const infoButton = event.target.closest(".info-button");
     const card = event.target.closest(".item-card");
 
     if (infoButton) {
       event.stopPropagation();
+      openModal(infoButton.dataset.infoId);
       return;
     }
 
     if (card) {
-      beginDrag(event, card);
+      selectItem(card.dataset.itemId);
     }
   });
 
-  inventoryList.addEventListener("click", (event) => {
-    const infoButton = event.target.closest(".info-button");
-
-    if (infoButton) {
-      openModal(infoButton.dataset.infoId);
-    }
-  });
+  inventoryList.addEventListener("touchstart", handleInventoryTouchStart, { passive: true });
+  inventoryList.addEventListener("touchmove", handleInventoryTouchMove, { passive: false });
 
   inventoryList.addEventListener("keydown", (event) => {
     const card = event.target.closest(".item-card");
 
     if (card && (event.key === "Enter" || event.key === " ")) {
       event.preventDefault();
-      openModal(card.dataset.itemId);
+      selectItem(card.dataset.itemId);
     }
   });
-
-  window.addEventListener("pointermove", moveDrag, { passive: false });
-  window.addEventListener("pointerup", endDrag, { passive: false });
-  window.addEventListener("pointercancel", endDrag, { passive: false });
 
   workbench.addEventListener("click", (event) => {
     const removeButton = event.target.closest(".remove-slot-button");
 
-    if (!removeButton || isSynthesizing) {
+    if (isSynthesizing) {
       return;
     }
 
-    const slotElement = removeButton.closest(".craft-slot");
-    removeSlot(slotElement.dataset.slot);
+    if (removeButton) {
+      const slotElement = removeButton.closest(".craft-slot");
+      removeSlot(slotElement.dataset.slot);
+      return;
+    }
+
+    const slotElement = event.target.closest(".craft-slot");
+
+    if (slotElement) {
+      placeSelectedItem(slotElement);
+    }
   });
 
   synthesizeButton.addEventListener("click", synthesize);
   resetButton.addEventListener("click", resetCraft);
+  resetButton.addEventListener("click", () => {
+    setMessage(craftMessage, "持ち物BOXからアイテムをタップして選んでください。");
+  });
 
   againButton.addEventListener("click", () => {
     resetCraft();

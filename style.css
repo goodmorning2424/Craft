@@ -25,6 +25,7 @@
 html {
   min-height: 100%;
   background: var(--bg);
+  overscroll-behavior: none;
 }
 
 body {
@@ -32,6 +33,7 @@ body {
   min-height: 100dvh;
   margin: 0;
   overflow-x: hidden;
+  overscroll-behavior: none;
   color: var(--text);
   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", system-ui, sans-serif;
   background:
@@ -383,6 +385,7 @@ h4 {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
   touch-action: pan-y;
   scroll-behavior: smooth;
   padding-right: 4px;
@@ -419,7 +422,7 @@ h4 {
   text-align: left;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.22));
   box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.04);
-  cursor: grab;
+  cursor: pointer;
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
@@ -427,11 +430,17 @@ h4 {
 }
 
 .item-card:active {
-  cursor: grabbing;
+  transform: translateY(1px);
 }
 
 .item-card.is-drag-source {
   opacity: 0.72;
+}
+
+.item-card.is-selected {
+  border-color: var(--gold-bright);
+  background: linear-gradient(145deg, rgba(255, 226, 162, 0.18), rgba(0, 0, 0, 0.2));
+  box-shadow: 0 0 0 4px rgba(255, 226, 162, 0.18), inset 0 0 22px rgba(255, 226, 162, 0.08);
 }
 
 .item-visual {
@@ -575,6 +584,8 @@ h4 {
   background: rgba(54, 105, 190, 0.86);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42), inset 0 0 20px rgba(255, 255, 255, 0.08);
   transition: border-color 0.16s, box-shadow 0.16s, transform 0.16s, background 0.16s;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .craft-slot.is-filled {
