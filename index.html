@@ -2,118 +2,167 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>属性剣クラフト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>属性剣クラフト工房</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
-    <section id="title-screen" class="screen screen-title is-active" aria-labelledby="title-heading">
+    <section id="title-screen" class="screen title-screen is-active" aria-labelledby="title-heading">
       <div class="title-panel">
-        <p class="eyebrow">文化祭デモ版</p>
-        <h1 id="title-heading">属性剣クラフト</h1>
-        <img class="title-sword-image" src="assets/old-sword.png" alt="古びた剣">
-        <p class="lead">古びた剣に魔石をはめ込み、属性の力を宿した武器を鍛えよう。</p>
-        <button id="start-button" class="primary-button" type="button">クラフトを始める</button>
+        <p class="eyebrow">文化祭デモ</p>
+        <h1 id="title-heading">属性剣クラフト工房</h1>
+        <img class="title-sword" src="assets/old-sword.png" alt="古びた剣" data-fallback="⚔️">
+        <p class="title-copy">魔石と素材を組み合わせて、あなただけの属性剣を作ろう！</p>
+        <div class="title-actions">
+          <button id="start-button" class="primary-button" type="button">クラフトを始める</button>
+          <button class="secondary-button fullscreen-button" type="button">全画面で遊ぶ</button>
+        </div>
+        <p id="title-message" class="screen-message" role="status" aria-live="polite"></p>
       </div>
     </section>
 
-    <section id="craft-screen" class="screen" aria-labelledby="craft-heading">
-      <header class="craft-header">
+    <section id="craft-screen" class="screen craft-screen" aria-labelledby="craft-heading">
+      <header class="craft-topbar">
         <div>
-          <p class="eyebrow">鍛冶場</p>
-          <h2 id="craft-heading">素材を選んでスロットに配置</h2>
+          <p class="eyebrow">作業台</p>
+          <h2 id="craft-heading">属性剣クラフト</h2>
+          <p class="craft-guide">アイテムを指で持って、作業台のスロットに置こう！</p>
+          <ol class="quick-steps" aria-label="作り方">
+            <li>属性を決める</li>
+            <li>スキルをつける</li>
+            <li>強化して合成！</li>
+          </ol>
         </div>
-        <div class="base-status" aria-label="初期ステータス">
-          <span>攻撃力 100</span>
-          <span>耐久力 80</span>
-          <span>属性 なし</span>
-        </div>
+        <button class="secondary-button fullscreen-button" type="button">全画面で遊ぶ</button>
       </header>
 
+      <p id="craft-message" class="screen-message craft-message" role="status" aria-live="polite">素材カタログからアイテムをドラッグしてください。</p>
+
       <div class="craft-layout">
-        <aside class="materials-panel" aria-label="素材一覧">
-          <h3>素材</h3>
-          <div id="materials-list" class="materials-list"></div>
+        <aside id="inventory-panel" class="inventory-panel" aria-label="持ち物BOX">
+          <div class="panel-title-row">
+            <h3>持ち物BOX</h3>
+            <button id="inventory-toggle" class="tiny-button" type="button" aria-expanded="true">▲ 閉じる</button>
+          </div>
+          <p class="panel-note">同じアイテムを何回でも使えます。</p>
+          <div id="inventory-list" class="inventory-list"></div>
         </aside>
 
-        <section class="forge-panel" aria-label="クラフト台">
-          <div id="message" class="message" role="status" aria-live="polite">素材をタップして選択してください。</div>
-
-          <div class="forge-circle" aria-label="古びた剣とスロット">
+        <section class="workbench-panel" aria-label="作業台エリア">
+          <div id="workbench" class="workbench">
             <div id="fusion-stage" class="fusion-stage" aria-hidden="true">
               <div id="magic-circle" class="magic-circle"></div>
+              <div id="fusion-sparks" class="fusion-sparks"></div>
               <img id="fusion-result-image" class="fusion-result-image" src="assets/old-sword.png" alt="">
             </div>
 
-            <button class="slot slot-top" type="button" data-slot="top" aria-label="上スロット">
-              <span class="slot-name">上</span>
-              <span class="slot-value">空</span>
-              <span class="slot-effect">攻撃力 +50</span>
-            </button>
-            <button class="slot slot-right" type="button" data-slot="right" aria-label="右スロット">
-              <span class="slot-name">右</span>
-              <span class="slot-value">空</span>
-              <span class="slot-effect">耐久力 +20</span>
-            </button>
-            <button class="slot slot-left" type="button" data-slot="left" aria-label="左スロット">
-              <span class="slot-name">左</span>
-              <span class="slot-value">空</span>
-              <span class="slot-effect">耐久力 +20</span>
-            </button>
-            <button class="slot slot-bottom" type="button" data-slot="bottom" aria-label="下スロット">
-              <span class="slot-name">下</span>
-              <span class="slot-value">空</span>
-              <span class="slot-effect">攻撃 -20 / 耐久 -15</span>
-            </button>
+            <div class="table-glow" aria-hidden="true"></div>
 
-            <div class="sword" aria-label="古びた剣">
-              <img id="craft-sword-image" src="assets/old-sword.png" alt="古びた剣">
-              <p>古びた剣</p>
+            <div class="base-sword">
+              <img src="assets/old-sword.png" alt="古びた剣" data-fallback="⚔️">
+              <span>古びた剣</span>
+            </div>
+
+            <div class="craft-slot slot-attribute" data-slot="attribute" data-accept="attribute">
+              <button class="remove-slot-button" type="button" aria-label="属性スロットから外す">×</button>
+              <span class="slot-title">属性スロット</span>
+              <span class="slot-help">何の力の剣になるか</span>
+              <span class="slot-content">空</span>
+            </div>
+
+            <div class="craft-slot slot-skill" data-slot="skill" data-accept="skill">
+              <button class="remove-slot-button" type="button" aria-label="固有スキルスロットから外す">×</button>
+              <span class="slot-title">固有スキル</span>
+              <span class="slot-help">特別な力を1つつける</span>
+              <span class="slot-content">空</span>
+            </div>
+
+            <div class="craft-slot slot-top" data-slot="top" data-accept="upgrade">
+              <button class="remove-slot-button" type="button" aria-label="上スロットから外す">×</button>
+              <span class="slot-title">上：攻撃向き</span>
+              <span class="slot-help">攻撃率が伸びやすい</span>
+              <span class="slot-content">空</span>
+            </div>
+
+            <div class="craft-slot slot-right" data-slot="right" data-accept="upgrade">
+              <button class="remove-slot-button" type="button" aria-label="右スロットから外す">×</button>
+              <span class="slot-title">右：防御向き</span>
+              <span class="slot-help">防御率が伸びやすい</span>
+              <span class="slot-content">空</span>
+            </div>
+
+            <div class="craft-slot slot-left" data-slot="left" data-accept="upgrade">
+              <button class="remove-slot-button" type="button" aria-label="左スロットから外す">×</button>
+              <span class="slot-title">左：回避向き</span>
+              <span class="slot-help">回避率が伸びやすい</span>
+              <span class="slot-content">空</span>
+            </div>
+
+            <div class="craft-slot slot-bottom" data-slot="bottom" data-accept="upgrade">
+              <button class="remove-slot-button" type="button" aria-label="下スロットから外す">×</button>
+              <span class="slot-title">下：属性向き</span>
+              <span class="slot-help">属性強化が伸びやすい</span>
+              <span class="slot-content">空</span>
             </div>
           </div>
-
-          <div class="actions">
-            <button id="synthesize-button" class="primary-button" type="button">合成する</button>
-          </div>
         </section>
+
+        <aside class="status-panel" aria-label="現在の強化状況">
+          <h3>現在の強化状況</h3>
+          <div id="boost-list" class="boost-list"></div>
+          <div class="selected-summary">
+            <h4>セット中</h4>
+            <p id="attribute-summary">属性：未設定</p>
+            <p id="skill-summary">スキル：未設定</p>
+          </div>
+        </aside>
+
+        <div class="craft-actions">
+          <button id="synthesize-button" class="primary-button" type="button">合成する！</button>
+          <button id="reset-button" class="secondary-button" type="button">リセット</button>
+        </div>
       </div>
     </section>
 
-    <section id="result-screen" class="screen" aria-labelledby="result-heading">
+    <section id="result-screen" class="screen result-screen" aria-labelledby="result-heading">
       <div class="result-panel">
-        <p class="eyebrow">鍛造完了</p>
+        <p class="eyebrow">完成</p>
         <h2 id="result-heading">合成成功！</h2>
-        <img id="result-weapon-image" class="result-weapon-image" src="assets/old-sword.png" alt="完成した属性剣">
+        <img id="result-weapon-image" class="result-weapon-image" src="assets/old-sword.png" alt="完成した属性剣" data-fallback="⚔️">
 
-        <dl class="result-stats">
-          <div>
-            <dt>完成武器名</dt>
-            <dd id="result-name"></dd>
-          </div>
-          <div>
-            <dt>攻撃力</dt>
-            <dd id="result-attack"></dd>
-          </div>
-          <div>
-            <dt>耐久力</dt>
-            <dd id="result-durability"></dd>
-          </div>
-          <div>
-            <dt>属性</dt>
-            <dd id="result-element"></dd>
-          </div>
+        <dl class="result-grid">
+          <div><dt>完成武器名</dt><dd id="result-name"></dd></div>
+          <div><dt>属性</dt><dd id="result-attribute"></dd></div>
+          <div><dt>固有スキル</dt><dd id="result-skill"></dd></div>
+          <div><dt>スキル効果</dt><dd id="result-skill-effect"></dd></div>
+          <div><dt>攻撃率</dt><dd id="result-attack"></dd></div>
+          <div><dt>防御率</dt><dd id="result-defense"></dd></div>
+          <div><dt>回避率</dt><dd id="result-evasion"></dd></div>
+          <div><dt>属性強化</dt><dd id="result-element-boost"></dd></div>
+          <div><dt>タイプ</dt><dd id="result-type"></dd></div>
         </dl>
 
-        <section class="effect-box" aria-labelledby="effect-heading">
-          <h3 id="effect-heading">配置による効果説明</h3>
-          <ul id="effect-list"></ul>
+        <section class="result-description" aria-labelledby="result-description-heading">
+          <h3 id="result-description-heading">合成内容</h3>
+          <ul id="result-description-list"></ul>
         </section>
 
-        <button id="reset-button" class="primary-button" type="button">最初に戻る</button>
+        <button id="again-button" class="primary-button" type="button">もう一度クラフト</button>
       </div>
     </section>
   </main>
+
+  <div id="item-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="閉じる">×</button>
+      <div id="modal-icon" class="modal-icon" aria-hidden="true"></div>
+      <h2 id="modal-title"></h2>
+      <div id="modal-body" class="modal-body"></div>
+      <button class="primary-button modal-ok" type="button" data-close-modal>閉じる</button>
+    </section>
+  </div>
 
   <script src="script.js"></script>
 </body>
